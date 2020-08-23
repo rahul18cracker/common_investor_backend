@@ -12,6 +12,6 @@ from .P10kParser import (
     Parse10KForm,
 )
 
-from .P10QParser import import (
-    P10QParser,
+from .P10QParser import (
+    Parse10QForm,
 )

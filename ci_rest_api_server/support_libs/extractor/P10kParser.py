@@ -1,12 +1,11 @@
-from typing import Dict, Any, Union
-# TODO : Correct this import for all this is not good
-try:
-    from my_rest_app.extractor.IExtractDBPush import logger
-except ImportError:
-    from intellegent_inv_rest_api_server.my_rest_app.extractor.IExtractDBPush import logger
-
+from typing import (Dict,
+                    Any,
+                    Union,
+                    )
 from bs4 import BeautifulSoup
 import time
+import ci_rest_api_server.support_libs.extractor.IExtractDBPush
+
 
 # TODO: Move this to a central location to measure time for function execution using decorators
 def timeit(method):
@@ -19,7 +18,7 @@ def timeit(method):
             kw['log_time'][name] = int((te - ts) * 1000)
         else:
             print('%r  %2.2f ms' %
-                  (meth od.__name__, (te - ts) * 1000))
+                  (method.__name__, (te - ts) * 1000))
         return result
 
     return timed
@@ -108,7 +107,7 @@ class Parse10KForm:
             with open(file_path) as file:
                 file_contents = file.read()
         except Exception as error:
-            logger.exception(f"Unexpected error opening file:{file_path} Err-{error}")
+            ci_rest_api_server.support_libs.extractor.IExtractDBPush.logger.exception(f"Unexpected error opening file:{file_path} Err-{error}")
             raise error
         # open as Beautiful soup object and get the data for each tag
         form_10_k_bs_obj = BeautifulSoup(file_contents, 'lxml')
@@ -126,7 +125,7 @@ class Parse10KForm:
                         # from the main tag get the data for that year
                         self._needed_tags[element] = int(tag.text)
                 else:
-                    logger.debug(f"Unable to get data for {search_string}")
+                    ci_rest_api_server.support_libs.extractor.IExtractDBPush.logger.debug(f"Unable to get data for {search_string}")
         # Add the filing year also as we do not extract it above
         self._needed_tags['filing-year'] = year
         # Since beautiful soup cant be used as this not tag based using regex
@@ -135,7 +134,7 @@ class Parse10KForm:
         # ticker_type_pattern = re.compile(r'under the symbol(\s+)?(\W+)?(\w+)')
         # ticker_matches = ticker_type_pattern.search(file_contents)
         self._needed_tags['ticker'] = ticker
-        logger.info(f"Completed extraction for year {year} | file: {file_path} "
+        ci_rest_api_server.support_libs.extractor.IExtractDBPush.logger.info(f"Completed extraction for year {year} | file: {file_path} "
                     f"| ticker:{self._needed_tags['ticker']}")
         return self._needed_tags
 

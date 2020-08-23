@@ -10,21 +10,30 @@
 # It's used to pull the txt files on form type basis
 #  "PEP 8 unto thyself, not unto others. Brilliant."
 # - By Raymond hettengier
-from typing import List, Any, Dict
+from typing import (List,
+                    Any,
+                    Dict,
+                    )
 import os
 import re
+from datetime import datetime
+import logging
 from pymongo import MongoClient
 import pymongo
-from pymongo.errors import ConnectionFailure, WriteError, WriteConcernError
-from secedgar.filings import Filing, FilingType
-from secedgar.utils.exceptions import EDGARQueryError, EDGARFieldError, CIKError, FilingTypeError
-try:
-    from my_rest_app.extractor.GFormParse import GeneralFormParser
-except ImportError:
-    from intellegent_inv_rest_api_server.my_rest_app.extractor.GFormParse import *
+from pymongo.errors import (ConnectionFailure,
+                            WriteError,
+                            WriteConcernError,
+                            )
+from secedgar.filings import (Filing,
+                              FilingType,
+                              )
+from secedgar.utils.exceptions import (EDGARQueryError,
+                                       EDGARFieldError,
+                                       CIKError,
+                                       FilingTypeError,
+                                       )
+from ci_rest_api_server.support_libs.extractor.GFormParse import GeneralFormParser
 
-import logging
-from datetime import datetime
 # set logging file name and non-root names
 # TODO: Improve the logger to write to Json files also, this will help in data analytics
 logger = logging.getLogger(__name__)
@@ -352,11 +361,12 @@ class ExtractParseForms:
 if __name__ == '__main__':
 #    Data pushing code test
     obj = ExtractParseForms('/Users/rahmathu/Documents/personal_projects/sec-reports')
-    obj.pull_ticker_symbol('nflx', '10-K', 10)
-    ticker_data_list = obj.parse_form('nflx', '10-K')
-    obj.push_to_db(ticker_data_list)
+    obj.pull_ticker_symbol('csco', '10-K', 10)
+    ticker_data_list = obj.parse_form('csco', '10-K')
+    print(ticker_data_list)
+    #obj.push_to_db(ticker_data_list)
 #    Data pulling code test=================
-    obj = ExtractParseForms.from_db()
-    returned_dict = obj.pull_from_db(ticker='nflx', db_name='10-k')
-    print(returned_dict.keys())
+    #obj = ExtractParseForms.from_db()
+    #returned_dict = obj.pull_from_db(ticker='nflx', db_name='10-k')
+    #print(returned_dict.keys())
 

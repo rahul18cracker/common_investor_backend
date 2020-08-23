@@ -1,11 +1,9 @@
 # This class implements the composition pattern
 from typing import Tuple
-try:
-    from my_rest_app.extractor.P10kParser import Parse10KForm
-except ImportError:
-    from intellegent_inv_rest_api_server.my_rest_app.extractor.P10kParser import Parse10KForm
-from my_rest_app.extractor.P10QParser import Parse10QForm
-from my_rest_app.extractor.IExtractDBPush import *
+import re
+from ci_rest_api_server.support_libs.extractor.P10kParser import Parse10KForm
+from ci_rest_api_server.support_libs.extractor.P10QParser import Parse10QForm
+import ci_rest_api_server.support_libs.extractor.IExtractDBPush
 
 
 class GeneralFormParser:
@@ -35,12 +33,12 @@ class GeneralFormParser:
         :return: form type, year of filing
         :rtype: Tuple[str, int]
         """
-        logger.debug(f"Opening file: {file_path} for parsing")
+        ci_rest_api_server.support_libs.extractor.IExtractDBPush.logger.debug(f"Opening file: {file_path} for parsing")
         try:
             with open(file_path) as file:
                 file_contents = file.read()
         except Exception as error:
-            logger.exception(f"Unexpected error opening file:{file_path} Err-{error}")
+            ci_rest_api_server.support_libs.extractor.IExtractDBPush.logger.exception(f"Unexpected error opening file:{file_path} Err-{error}")
             raise error
 
         form_type_pattern = re.compile(r'CONFORMED SUBMISSION TYPE:\s+([0-9]+)\-([a-zA-Z]+)')
@@ -52,17 +50,17 @@ class GeneralFormParser:
         try:
             extracted_form_type = form_matches.group(1) + "-" + form_matches.group(2)
         except AttributeError as ae:
-            logger.exception(f"Unable to get form type :{file_path} Err-{ae}")
+            ci_rest_api_server.support_libs.extractor.IExtractDBPush.logger.exception(f"Unable to get form type :{file_path} Err-{ae}")
         # Get filing date
         date_filed_matches = date_filed_type_pattern.search(file_contents[0:2000])
-        logger.debug(f"Form matches {form_matches} date matches {date_filed_matches}")
+        ci_rest_api_server.support_libs.extractor.IExtractDBPush.logger.debug(f"Form matches {form_matches} date matches {date_filed_matches}")
         extracted_year_filed = 0
         try:
             # get only the first 4 digits as it denotes the year
             extracted_year_filed = int(date_filed_matches.group(1)[:4])
         except ValueError as ve:
-            logger.exception(f"Unable to get filing year:{file_path} Err-{ve}")
-        logger.info(f"Extracted form type: {extracted_form_type} year: {extracted_year_filed}")
+            ci_rest_api_server.support_libs.extractor.IExtractDBPush.logger.exception(f"Unable to get filing year:{file_path} Err-{ve}")
+        ci_rest_api_server.support_libs.extractor.IExtractDBPush.logger.info(f"Extracted form type: {extracted_form_type} year: {extracted_year_filed}")
         return (extracted_form_type,
                 extracted_year_filed)
 
@@ -87,19 +85,19 @@ class GeneralFormParser:
         logtime_data = {}
         try:
             self._form_operator = self.__form_types_inventory.get(form_type)
-            logger.debug(f"Form class from mapping {self._form_operator.__class__.__name__}")
+            ci_rest_api_server.support_libs.extractor.IExtractDBPush.logger.debug(f"Form class from mapping {self._form_operator.__class__.__name__}")
             self._extracted_form_data = self._form_operator.get_form_data(file_path=file_path,
                                                                           year=year_of_filing,
                                                                           ticker=ticker,
                                                                           log_time=logtime_data)
         except Exception as err:
-            logger.exception(f"Form extraction failed for {file_path} "
+            ci_rest_api_server.support_libs.extractor.IExtractDBPush.logger.exception(f"Form extraction failed for {file_path} "
                              f"form type: {form_type} year:{year_of_filing}")
-            logger.warning(f"Unable to extract form data for {file_path}")
+            ci_rest_api_server.support_libs.extractor.IExtractDBPush.logger.warning(f"Unable to extract form data for {file_path}")
             raise err
         finally:
             # TODO: Remove the file after parsing is good to save space
-            logger.debug(f"Exectution time is {logtime_data}")
+            ci_rest_api_server.support_libs.extractor.IExtractDBPush.logger.debug(f"Exectution time is {logtime_data}")
             pass
         return self._extracted_form_data
 
