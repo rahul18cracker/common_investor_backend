@@ -361,12 +361,12 @@ class ExtractParseForms:
 if __name__ == '__main__':
 #    Data pushing code test
     obj = ExtractParseForms('/Users/rahmathu/Documents/personal_projects/sec-reports')
-    obj.pull_ticker_symbol('csco', '10-K', 10)
-    ticker_data_list = obj.parse_form('csco', '10-K')
+    obj.pull_ticker_symbol('nvda', '10-K', 10)
+    ticker_data_list = obj.parse_form('nvda', '10-K')
     print(ticker_data_list)
-    #obj.push_to_db(ticker_data_list)
+    obj.push_to_db(ticker_data_list)
 #    Data pulling code test=================
-    #obj = ExtractParseForms.from_db()
-    #returned_dict = obj.pull_from_db(ticker='nflx', db_name='10-k')
-    #print(returned_dict.keys())
+    obj = ExtractParseForms.from_db()
+    returned_dict = obj.pull_from_db(ticker='nvda', db_name='10-k')
+    print(returned_dict.keys())
 
