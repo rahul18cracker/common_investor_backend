@@ -35,6 +35,7 @@ def get_10k_ticker_data(ticker_symbol):
 
 @app.route('/')
 def hello():
+    # TODO(rahul): Just remove this default root later when container work is stabalized
     return "<h1>Hello from CI backend </h1>"
 
 if __name__ == "__main__":
