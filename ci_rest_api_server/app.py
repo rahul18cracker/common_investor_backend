@@ -1,4 +1,5 @@
 # Flask backend app file
+import os
 from flask import (
     Flask,
     make_response,
@@ -26,8 +27,16 @@ def get_10k_ticker_data(ticker_symbol):
                                                   db_name='10-k')
     except Exception as err:
         # logger.exception(f"Unable to find ticker {ticker_symbol} err:{err}")
-        return make_response(f"Opps ticker: {ticker_symbol} data not found",
+        return make_response(f"Opps ticker: {ticker_symbol} data not found {err}",
                              501)
     # logger.debug(f"Success data returned for ticker: {ticker_symbol}")
     return make_response(json_util.dumps(returned_dict),
                          200)
+
+@app.route('/')
+def hello():
+    return "<h1>Hello from CI backend </h1>"
+
+if __name__ == "__main__":
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)
