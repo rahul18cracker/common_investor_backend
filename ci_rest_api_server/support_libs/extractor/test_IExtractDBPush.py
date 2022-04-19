@@ -1,7 +1,7 @@
 import unittest
 import shutil
 import os
-from IExtractDBPush import ExtractParseForms
+from ci_rest_api_server.support_libs.extractor.IExtractDBPush import ExtractParseForms
 
 TEST_FILE_LOCATION = "/tmp"
 

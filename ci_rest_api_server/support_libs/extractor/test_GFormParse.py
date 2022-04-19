@@ -3,7 +3,7 @@ import os
 import shutil
 import unittest
 
-from GFormParse import GeneralFormParser
+from ci_rest_api_server.support_libs.extractor.GFormParse import GeneralFormParser
 from secedgar.filings import Filing, FilingType
 
 TEST_FILE_LOCATION = "/tmp"

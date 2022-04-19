@@ -1,7 +1,7 @@
 import unittest
 import datetime, os, shutil
 from secedgar.filings import Filing, FilingType
-from P10kParser import Parse10KForm
+from ci_rest_api_server.support_libs.extractor.P10kParser import Parse10KForm
 
 # TODO: You can use tempfile module, mkdtemp() ,
 # self.scratch_dir = tempfile.mkdtemp()
