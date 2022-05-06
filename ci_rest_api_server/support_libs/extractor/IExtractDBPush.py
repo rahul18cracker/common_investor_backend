@@ -24,14 +24,16 @@ from pymongo.errors import (ConnectionFailure,
                             WriteError,
                             WriteConcernError,
                             )
-from secedgar.filings import (Filing,
-                              FilingType,
-                              )
-from secedgar.utils.exceptions import (EDGARQueryError,
-                                       EDGARFieldError,
-                                       CIKError,
-                                       FilingTypeError,
-                                       )
+# from secedgar.filings import (Filing,
+#                               FilingType,
+#                               )
+from secedgar import filings, FilingType
+# from secedgar.utils.exceptions import (EDGARQueryError,
+#                                        EDGARFieldError,
+#                                        CIKError,
+#                                        FilingTypeError,
+#                                        )
+from secedgar.exceptions import (EDGARQueryError, CIKError, FilingTypeError)
 from ci_rest_api_server.support_libs.extractor.GFormParse import GeneralFormParser
 
 # set logging file name and non-root names
@@ -71,7 +73,7 @@ class ExtractParseForms:
     """
     # Used by consumer to pull data from DB only
     # Reason for use: opening and closing connections to Mongp DB are expensive the time
-    # consuming, this will make the operation fast by keeping the connection open for 
+    # consuming, this will make the operation fast by keeping the connection open for
     # fast requests
     _client_handle_pull_db = None
 
@@ -166,7 +168,7 @@ class ExtractParseForms:
     def prepare_list_of_files(self,
                               ticker: str,
                               form_type: str) -> list:
-        """ 
+        """
         Prepares the list of text files in sorted order year wise for parsing
         :param ticker: ticker symbol
         :type ticker: str
@@ -277,7 +279,7 @@ class ExtractParseForms:
         """
         This pushes the extracted data for the company to the DB
         :param list_of_dicts: list of all dict value pulled from the form
-        :type list_of_dicts: list 
+        :type list_of_dicts: list
         :return: None
         :rtype: None
         """
@@ -309,21 +311,21 @@ class ExtractParseForms:
                      ticker: str,
                      db_name: str):
         """
-        Returns all the data typically 10 years history for a given ticker symbol and 
+        Returns all the data typically 10 years history for a given ticker symbol and
         DB type. Note DB type is Mongo DB type
-        NOTE: To use this function use alternative constructor which is the data pulling 
-              constructor 
+        NOTE: To use this function use alternative constructor which is the data pulling
+              constructor
         :param ticker: Company for which data is needed eg. 'aapl', 'csco'
         :type ticker: str
         :param db_name: This is the DB type for mongo DB, can have values like 10-K, 10-Q
-                        these are the form types, each DB type = SEC form type 
+                        these are the form types, each DB type = SEC form type
         :type db_name: str
-        :return: a collection of dictionaries for all years 
+        :return: a collection of dictionaries for all years
         :rtype: dict
         """
         data_from_db = {}
         try:
-            # remember this is a pull connection, has to be independent of push connection 
+            # remember this is a pull connection, has to be independent of push connection
             db = self._client_handle_pull_db[db_name.upper()]
             collection_info = db.validate_collection(ticker.lower())
             logger.debug("%s %s %s %s %s %s",
@@ -369,4 +371,3 @@ if __name__ == '__main__':
     obj = ExtractParseForms.from_db()
     returned_dict = obj.pull_from_db(ticker='nvda', db_name='10-k')
     print(returned_dict.keys())
-
