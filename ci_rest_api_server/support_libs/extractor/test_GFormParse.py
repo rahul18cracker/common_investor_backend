@@ -4,12 +4,12 @@ import shutil
 import unittest
 
 from ci_rest_api_server.support_libs.extractor.GFormParse import GeneralFormParser
-from secedgar.filings import Filing, FilingType
+from secedgar import filings, FilingType
 
 TEST_FILE_LOCATION = "/tmp"
 FILE_TYPES = {
     'test_missing_data': '/test_file.txt',
-    'test_correct_form_type_year_extraction': '/aapl/10-k/0000320193-18-000145.txt',
+    'test_correct_form_type_year_extraction': '/aapl/10-K/0000320193-18-000145.txt',
 }
 
 
@@ -29,11 +29,12 @@ class TestGeneralFormParser(unittest.TestCase):
         # This will make sure that we are pulling 2018 records only as they parse well
         start_date, end_date = datetime.datetime(2018, 8, 1), datetime.datetime(2019, 1, 1)
         # Get a known good company and a single 10-k form
-        my_filings = Filing(cik_lookup='aapl',
+        my_filings = filings(cik_lookup='aapl',
                             filing_type=FilingType.FILING_10K,
                             count=1,
                             start_date=start_date,
-                            end_date=end_date)
+                            end_date=end_date,
+                             user_agent="Your name (your email)")
         my_filings.save(TEST_FILE_LOCATION)
 
     @classmethod
